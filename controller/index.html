@@ -1,0 +1,147 @@
+<html>
+  <head>
+    <title>CROP Controller</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Javascript JoySticks to control the CROP app">
+    <meta name="author" content="Nick Barlow">
+    <style>
+*
+{
+	box-sizing: border-box;
+}
+body
+{
+	margin: 0px;
+	padding: 0px;
+	font-family: monospace;
+}
+.row
+{
+	display: inline-flex;
+	clear: both;
+}
+.columnLateral
+{
+  float: left;
+  width: 15%;
+  min-width: 300px;
+}
+.columnCentral
+{
+  float: center;
+  width: 30%;
+  min-width: 300px;
+}
+#joy2Div
+{
+	width:200px;
+	height:200px;
+	margin:50px
+}
+#joystick1
+{
+	border: 1px solid #FF0000;
+}
+#joystick2
+{
+	border: 1px solid #0000FF;
+}
+    </style>
+    <script src="joy.js"></script>
+    <script>
+      var ws;
+      var lastFrameCentred = false;
+      function init() {
+
+	  // Connect to Web Socket
+	  ws = new WebSocket("ws://172.187.194.68:9010");
+
+	  // Set event handlers.
+	  ws.onopen = function() {
+              output("onopen");
+	  };
+
+	  ws.onmessage = function(e) {
+              // e.data contains received string.
+        //      output("onmessage: " + e.data);
+	  };
+
+	  ws.onclose = function() {
+              output("onclose");
+	  };
+
+	  ws.onerror = function(e) {
+              output("onerror");
+              console.log(e)
+	  };
+      }
+
+      function sendPositions(joy1X, joy1Y, joy2X, joy2Y) {
+
+	  if (joy1X+joy1Y+joy2X+joy2Y != 400) {
+	      ws.send(["joy1X", joy1X-100]);
+	      ws.send(["joy2X", joy2X-100]);
+	      ws.send(["joy1Y", joy1Y-100]);
+	      ws.send(["joy2Y", joy2Y-100]);
+	      lastFrameCentred = false;
+	  } else if (! lastFrameCentred) {
+	      ws.send("centred");
+	      lastFrameCentred = true;
+	  }
+      }
+
+      function sendClick() {
+	  ws.send("click");
+      }
+
+      function output(str) {
+	  var log = document.getElementById("log");
+	  var escaped = str.replace(/&/, "&amp;").replace(/</, "&lt;").
+          replace(/>/, "&gt;").replace(/"/, "&quot;"); // "
+	  log.innerHTML = escaped + "<br>" + log.innerHTML;
+      }
+
+
+    </script>
+
+  </head>
+  <body onload="init();">
+    <div class="instructions">
+      <h2>CROP Controller</h2>
+      <p>
+	Use the left stick to move around, and the right stick to look.   Click the "Interact" button to see details on crop trays or sensors.
+      </p>
+    </div>
+    <div class="row">
+      <div class="columnLateral">
+	<div id="joy1Div" style="width:200px;height:200px;margin:50px"></div>
+
+      </div>
+      <div class="columnCentral">
+
+	<div class="button">
+	  <button onclick="sendClick();">Interact</button>
+	</div>
+      </div>
+      <div class="columnLateral">
+	<div id="joy2Div"></div>
+      </div>
+    </div>
+  <div id="log"><div>
+    <script type="text/javascript">
+
+      // Create JoyStick object into 'joy1Div'
+      var joy1Param = { "title": "joystick1", "autoReturnToCenter": true };
+      var Joy1 = new JoyStick('joy1Div', joy1Param);
+
+
+      // Create JoyStick object into 'joy2Div'
+      var joy2Param = { "title": "joystick2", "autoReturnToCenter": true };
+      var Joy2 = new JoyStick('joy2Div', joy2Param);
+      //update the positions
+      setInterval(function(){ sendPositions(Joy1.GetPosX(), Joy1.GetPosY(),
+					    Joy2.GetPosX(), Joy2.GetPosY());}, 500);
+
+    </script>
+  </body>
+</html>
