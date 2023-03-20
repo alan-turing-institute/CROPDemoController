@@ -7,20 +7,20 @@
     <style>
 *
 {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 html, body {
-    margin: 0;
-    height: 100%;
+  margin: 0;
+  height: 100%;
 }
 
 body
 {
   display: flex;
   flex-flow: column nowrap;
-	padding: 10px;
-	font-family: arial, sans-serif;
+  padding: 10px;
+  font-family: arial, sans-serif;
 }
 
 .instructions {
@@ -32,10 +32,10 @@ body
   display: flex;
   flex-flow: row nowrap;
   width:100%;
-	margin: 0px;
-	padding: 0px;
-	display: inline-flex;
-	clear: both;
+  margin: 0px;
+  padding: 0px;
+  display: inline-flex;
+  clear: both;
 }
 
 .columnLateral
@@ -43,16 +43,16 @@ body
   flex: 10;
   display: flex;
   float: left;
-	margin: 0px;
-	padding: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 
 .columnCentral
 {
   display: flex;
   float: center;
-	margin: 10px;
-	padding: 0px;
+  margin: 10px;
+  padding: 0px;
 }
 
 .joyDiv {
@@ -63,15 +63,16 @@ body
 
 #joystick1
 {
-	border: 1px solid #FF0000;
+  border: 1px solid #FF0000;
 }
 
 #joystick2
 {
-	border: 1px solid #0000FF;
+  border: 1px solid #0000FF;
 }
 
-#interactButton {
+#interactButton
+{
   min-width: 100px;
   height: 100%;
 }
@@ -83,55 +84,54 @@ body
       var lastFrameCentred = false;
       function init() {
 
-	  // Connect to Web Socket
-	  ws = new WebSocket("ws://172.187.194.68:9010");
+          // Connect to Web Socket
+          ws = new WebSocket("ws://172.187.194.68:9010");
 
-	  // Set event handlers.
-	  ws.onopen = function() {
+          // Set event handlers.
+          ws.onopen = function() {
               output("onopen");
-	  };
+          };
 
-	  ws.onmessage = function(e) {
+          ws.onmessage = function(e) {
               // e.data contains received string.
         //      output("onmessage: " + e.data);
-	  };
+          };
 
-	  ws.onclose = function() {
+          ws.onclose = function() {
               output("onclose");
-	  };
+          };
 
-	  ws.onerror = function(e) {
+          ws.onerror = function(e) {
               output("onerror");
               console.log(e)
-	  };
+          };
       }
 
-      function sendPositions(joy1X, joy1Y, joy2X, joy2Y) {
+    function sendPositions(joy1X, joy1Y, joy2X, joy2Y) {
 
-	  if (joy1X+joy1Y+joy2X+joy2Y != 400) {
-	      var positionOutput = "{ 'joy1X': "+ joy1X-100;
-	      positionOutput += ", 'joy1Y': "+ joy1Y-100;
-	      positionOutput += ", 'joy2X': "+ joy2X-100;
-	      positionOutput += ", 'joy2Y': "+ joy2Y-100 + "}";
-	      ws.send(positionOutput);
-	      lastFrameCentred = false;
-	  } else if (! lastFrameCentred) {
-	      ws.send("centred");
-	      lastFrameCentred = true;
-	  }
+      if (joy1X+joy1Y+joy2X+joy2Y != 400) {
+        let positionOutput = `{ 'joy1X': ${joy1X};`
+          positionOutput += `, 'joy1Y': ${joy1Y}`;
+          positionOutput += `, 'joy2X': ${joy2X}`;
+          positionOutput += `, 'joy2Y': ${joy2Y}}`;
+        ws.send(positionOutput);
+        lastFrameCentred = false;
+      } else if (! lastFrameCentred) {
+        ws.send("centred");
+        lastFrameCentred = true;
       }
+    }
 
-      function sendClick() {
-	  ws.send("click");
-      }
+    function sendClick() {
+      ws.send("click");
+    }
 
-      function output(str) {
-	  var log = document.getElementById("log");
-	  var escaped = str.replace(/&/, "&amp;").replace(/</, "&lt;").
-          replace(/>/, "&gt;").replace(/"/, "&quot;"); // "
-	  log.innerHTML = escaped + "<br>" + log.innerHTML;
-      }
-
+    function output(str) {
+      const log = document.getElementById("log");
+      const escaped = str.replace(/&/, "&amp;").replace(/</, "&lt;").
+        replace(/>/, "&gt;").replace(/"/, "&quot;"); // "
+      log.innerHTML = escaped + "<br>" + log.innerHTML;
+    }
 
     </script>
 
@@ -140,7 +140,8 @@ body
     <div class="instructions">
       <h2>CROP Controller</h2>
       <p>
-	Use the left stick to move around, and the right stick to look.   Click the "Interact" button to see details on crop trays or sensors.
+        Use the left stick to move around, and the right stick to look.   Click the "Interact" button to see details on c
+rop trays or sensors.
       </p>
     </div>
     <div class="row">
@@ -156,21 +157,24 @@ body
         <div id="joy2Div" class="joyDiv"></div>
       </div>
     </div>
-    <div id="log"><div>
+    <div id="log"></div>
 
     <script type="text/javascript">
 
       // Create JoyStick object into 'joy1Div'
-      var joy1Param = { "title": "joystick1", "autoReturnToCenter": true };
-      var Joy1 = new JoyStick('joy1Div', joy1Param);
-
+      const joy1Param = { "title": "joystick1", "autoReturnToCenter": true };
+      const Joy1 = new JoyStick('joy1Div', joy1Param);
 
       // Create JoyStick object into 'joy2Div'
-      var joy2Param = { "title": "joystick2", "autoReturnToCenter": true };
-      var Joy2 = new JoyStick('joy2Div', joy2Param);
+      const joy2Param = { "title": "joystick2", "autoReturnToCenter": true };
+      const Joy2 = new JoyStick('joy2Div', joy2Param);
       //update the positions
-      setInterval(function(){ sendPositions(Joy1.GetPosX(), Joy1.GetPosY(),
-                  Joy2.GetPosX(), Joy2.GetPosY());}, 500);
+      setInterval(
+        function () {
+          sendPositions(Joy1.GetX(), Joy1.GetY(), Joy2.GetX(), Joy2.GetY());
+        },
+        500
+      );
 
     </script>
   </body>
