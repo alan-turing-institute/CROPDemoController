@@ -110,11 +110,11 @@ body
 
     function sendPositions(joy1X, joy1Y, joy2X, joy2Y) {
 
-      if (joy1X+joy1Y+joy2X+joy2Y != 400) {
-        let positionOutput = `{ 'joy1X': ${joy1X};`
-          positionOutput += `, 'joy1Y': ${joy1Y}`;
-          positionOutput += `, 'joy2X': ${joy2X}`;
-          positionOutput += `, 'joy2Y': ${joy2Y}}`;
+      if (joy1X+joy1Y+joy2X+joy2Y != 0) {
+        let positionOutput = `{ "joy1X": ${joy1X}`;
+          positionOutput += `, "joy1Y": ${joy1Y}`;
+          positionOutput += `, "joy2X": ${joy2X}`;
+          positionOutput += `, "joy2Y": ${joy2Y}}`;
         ws.send(positionOutput);
         lastFrameCentred = false;
       } else if (! lastFrameCentred) {
