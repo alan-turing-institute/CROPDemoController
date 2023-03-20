@@ -79,11 +79,11 @@ body
       function sendPositions(joy1X, joy1Y, joy2X, joy2Y) {
 
 	  if (joy1X+joy1Y+joy2X+joy2Y != 400) {
-	      var positionOutput = "{ 'joy1X': "+ joy1X-100;
-	      positionOutput += ", 'joy1Y': "+ joy1Y-100;
-	      positionOutput += ", 'joy2X': "+ joy2X-100;
-	      positionOutput += ", 'joy2Y': "+ joy2Y-100 + "}";
-	      ws.send(positionOutput);
+	   //   var positionOutput = "{ 'joy1X': "+ joy1X-100;
+	    //  positionOutput += ", 'joy1Y': "+ joy1Y-100;
+	    //  positionOutput += ", 'joy2X': "+ joy2X-100;
+	    //  positionOutput += ", 'joy2Y': "+ joy2Y-100 + "}";
+	      ws.send("test");
 	      lastFrameCentred = false;
 	  } else if (! lastFrameCentred) {
 	      ws.send("centred");
